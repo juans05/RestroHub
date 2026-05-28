@@ -42,7 +42,7 @@ export const SedeCard: React.FC<SedeCardProps> = ({ branch }) => {
 
           <div className="space-y-3 font-sans text-xs text-charcoal-light">
             <div className="flex items-start space-x-2.5">
-              <MapPin className="h-4.5 w-4.5 text-accent shrink-0 mt-0.5" />
+              <MapPin className="h-[18px] w-[18px] text-accent shrink-0 mt-0.5" />
               <span className="leading-relaxed">{branch.address}</span>
             </div>
             

@@ -6,7 +6,17 @@
       "PowerShell(Get-Content .env | ForEach-Object { if \\($_ -match '\\(.+\\)=\\(.+\\)'\\) { [Environment]::SetEnvironmentVariable\\($matches[1], $matches[2], 'Process'\\) } } && npx tsx prisma/seed.ts)",
       "Bash(ls \"d:\\\\Proyecto_juans_\\\\Restuarante\\\\src\\\\app\\\\admin\" /s 2>&1)",
       "Read(//d/s/**)",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(Get-ChildItem -Path \"d:\\\\Github\\\\RestroHub\\\\RestroHub\" -Force)",
+      "Bash(Select-Object Name, Mode)",
+      "Read(//c/Users/HP/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.5.0/.claude/skills/ui-ux-pro-max/**)",
+      "Bash(python scripts/search.py \"restaurant premium luxury food service ordering\" --design-system -p \"RestroHub\" -f markdown)",
+      "Bash(npx prisma *)",
+      "Bash(dir \"d:\\\\Github\\\\RestroHub\\\\RestroHub\\\\src\\\\generated\" /s /b)",
+      "Bash(Get-ChildItem \"d:\\\\Github\\\\RestroHub\\\\RestroHub\\\\src\\\\generated\" -Recurse)",
+      "Bash(Select-Object FullName)",
+      "Bash(git add *)",
+      "Bash(git commit *)"
     ]
   }
 }

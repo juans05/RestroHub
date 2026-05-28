@@ -7,7 +7,7 @@ import { CategorySlider } from '@/components/public/CategorySlider';
 import { DishCard } from '@/components/public/DishCard';
 import { CartDrawer } from '@/components/public/CartDrawer';
 import { mockDB, Category, Dish } from '@/lib/mockData';
-import { BookOpen, Search } from 'lucide-react';
+import { BookOpen, Search, UtensilsCrossed } from 'lucide-react';
 
 export default function MenuPage() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -64,16 +64,19 @@ export default function MenuPage() {
 
       {/* Global Interactive Search */}
       <div className="max-w-md mx-auto w-full px-4 sm:px-0 -mt-6 z-10 relative">
-        <div className="relative shadow-md rounded-2xl overflow-hidden bg-canvas border border-accent/20">
+        <label htmlFor="menu-search" className="sr-only">Buscar en la carta</label>
+        <div className="relative shadow-md rounded-2xl overflow-hidden bg-canvas border border-accent/20 focus-within:border-accent/60 focus-within:shadow-lg transition-all duration-200">
           <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-charcoal-light">
-            <Search className="h-4.5 w-4.5 stroke-[1.8]" />
+            <Search className="h-[18px] w-[18px] stroke-[1.8]" />
           </div>
           <input
-            type="text"
+            id="menu-search"
+            type="search"
             placeholder="Buscar postres, salados o cafés..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="block w-full pl-11 pr-4 py-3.5 font-sans text-sm text-charcoal bg-canvas border-none focus:outline-none placeholder-charcoal-light/60"
+            aria-label="Buscar en la carta"
           />
         </div>
       </div>
@@ -93,7 +96,9 @@ export default function MenuPage() {
           
           /* Empty Search or Category state */
           <div className="text-center py-20 space-y-4 max-w-xs mx-auto animate-fade-in">
-            <p className="text-4xl">🧁</p>
+            <div className="mx-auto h-16 w-16 flex items-center justify-center rounded-full bg-accent/8 border border-accent/15">
+              <UtensilsCrossed className="h-8 w-8 text-accent/60 stroke-[1.5]" />
+            </div>
             <h3 className="font-serif text-lg font-bold text-charcoal">No se encontraron delicias</h3>
             <p className="font-sans text-xs text-charcoal-light leading-relaxed">
               Prueba buscando otro platillo o revisa otra de nuestras categorías en el menú superior.
@@ -101,7 +106,7 @@ export default function MenuPage() {
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery('')}
-                className="font-sans text-xs font-semibold text-primary underline hover:text-primary-dark mt-2"
+                className="font-sans text-xs font-semibold text-primary hover:text-primary-dark underline underline-offset-2 mt-2"
               >
                 Limpiar búsqueda
               </button>

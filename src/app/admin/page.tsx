@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { mockDB, Order } from '@/lib/mockData';
-import { ShoppingBag, BookOpen, MapPin, DollarSign, Clock, Check, RefreshCw, Eye } from 'lucide-react';
+import { ShoppingBag, BookOpen, MapPin, DollarSign, RefreshCw, Eye, X } from 'lucide-react';
 
 export default function AdminDashboardPage() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -215,9 +215,10 @@ export default function AdminDashboardPage() {
               </div>
               <button
                 onClick={() => setSelectedOrder(null)}
-                className="p-1.5 text-charcoal-light hover:text-primary rounded-full hover:bg-canvas"
+                className="p-2 text-charcoal-light hover:text-primary rounded-full hover:bg-canvas transition-colors"
+                aria-label="Cerrar detalle del pedido"
               >
-                ✕
+                <X className="h-4 w-4" />
               </button>
             </div>
 

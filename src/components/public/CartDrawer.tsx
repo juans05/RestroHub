@@ -140,17 +140,17 @@ export const CartDrawer: React.FC = () => {
                       <div className="flex items-center border border-accent/20 rounded-xl bg-card-bg shadow-sm">
                         <button
                           onClick={() => updateQuantity(item.dish.id, item.quantity - 1)}
-                          className="p-1.5 text-charcoal-light hover:text-primary transition-colors"
+                          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-charcoal-light hover:text-primary hover:bg-canvas/60 rounded-l-xl transition-colors"
                           aria-label="Disminuir cantidad"
                         >
                           <Minus className="h-3.5 w-3.5" />
                         </button>
-                        <span className="font-sans text-xs font-bold text-charcoal px-3">
+                        <span className="font-sans text-xs font-bold text-charcoal px-3 select-none">
                           {item.quantity}
                         </span>
                         <button
                           onClick={() => updateQuantity(item.dish.id, item.quantity + 1)}
-                          className="p-1.5 text-charcoal-light hover:text-primary transition-colors"
+                          className="min-h-[44px] min-w-[44px] flex items-center justify-center text-charcoal-light hover:text-primary hover:bg-canvas/60 rounded-r-xl transition-colors"
                           aria-label="Aumentar cantidad"
                         >
                           <Plus className="h-3.5 w-3.5" />
@@ -159,7 +159,7 @@ export const CartDrawer: React.FC = () => {
 
                       <button
                         onClick={() => removeFromCart(item.dish.id)}
-                        className="p-2 text-charcoal-light hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                        className="min-h-[44px] min-w-[44px] flex items-center justify-center text-charcoal-light hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
                         aria-label="Eliminar item"
                       >
                         <Trash2 className="h-4 w-4" />

@@ -114,7 +114,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     : 'text-white/70 hover:bg-white/5 hover:text-white'
                 }`}
               >
-                <Icon className="h-4.5 w-4.5 shrink-0" />
+                <Icon className="h-[18px] w-[18px] shrink-0" />
                 <span>{item.name}</span>
               </Link>
             );
@@ -127,7 +127,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             onClick={handleLogout}
             className="w-full flex items-center space-x-3.5 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-red-300 hover:bg-red-500/10 hover:text-red-100 transition-all duration-200 cursor-pointer"
           >
-            <LogOut className="h-4.5 w-4.5 shrink-0" />
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
             <span>Cerrar Sesión</span>
           </button>
         </div>
@@ -187,7 +187,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   <span className="font-serif text-lg font-black text-white">{config.businessName}</span>
                   <span className="font-sans text-[9px] tracking-[0.2em] uppercase text-accent font-semibold -mt-0.5">Admin CMS</span>
                 </div>
-                <button onClick={() => setSidebarOpen(false)} className="p-1 rounded-full text-white/75 hover:text-white">
+                <button onClick={() => setSidebarOpen(false)} className="p-2 rounded-full text-white/75 hover:text-white hover:bg-white/10 transition-colors" aria-label="Cerrar panel">
                   <X className="h-5 w-5" />
                 </button>
               </div>
@@ -207,7 +207,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                           : 'text-white/70 hover:bg-white/5 hover:text-white'
                       }`}
                     >
-                      <Icon className="h-4.5 w-4.5 shrink-0" />
+                      <Icon className="h-[18px] w-[18px] shrink-0" />
                       <span>{item.name}</span>
                     </Link>
                   );
@@ -220,7 +220,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 onClick={handleLogout}
                 className="w-full flex items-center space-x-3.5 px-4 py-3 rounded-xl text-xs font-bold uppercase tracking-wider text-red-300 hover:bg-red-500/10 hover:text-red-100 transition-all duration-200"
               >
-                <LogOut className="h-4.5 w-4.5 shrink-0" />
+                <LogOut className="h-[18px] w-[18px] shrink-0" />
                 <span>Cerrar Sesión</span>
               </button>
             </div>

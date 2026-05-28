@@ -25,6 +25,7 @@ export default function ReservarPage() {
   // Submission States
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [validationError, setValidationError] = useState('');
   const [whatsappLink, setWhatsappLink] = useState('');
   const [createdOrderDetails, setCreatedOrderDetails] = useState<any>(null);
 
@@ -39,9 +40,10 @@ export default function ReservarPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !phone || !date || !time || !selectedBranchId) {
-      alert('Por favor, completa todos los campos obligatorios.');
+      setValidationError('Por favor, completa todos los campos obligatorios marcados con *.');
       return;
     }
+    setValidationError('');
 
     setIsSubmitting(true);
 
@@ -147,7 +149,7 @@ export default function ReservarPage() {
                 href={whatsappLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full font-sans text-sm font-bold text-white bg-[#25D366] hover:bg-[#20ba56] py-4.5 px-6 rounded-2xl shadow-md transition-smooth hover:scale-102 active:scale-98 flex items-center justify-center space-x-2.5"
+                className="w-full font-sans text-sm font-bold text-white bg-[#25D366] hover:bg-[#20ba56] py-4 px-6 rounded-2xl shadow-md transition-smooth hover:scale-102 active:scale-98 flex items-center justify-center space-x-2.5"
               >
                 <MessageSquare className="h-5 w-5 shrink-0" />
                 <span>Confirmar por WhatsApp</span>
@@ -204,7 +206,15 @@ export default function ReservarPage() {
               Datos de tu Reserva
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+
+              {/* Inline validation error */}
+              {validationError && (
+                <div role="alert" className="flex items-start space-x-2.5 bg-red-50 border border-red-200 text-red-700 font-sans text-xs rounded-xl px-4 py-3 animate-fade-in">
+                  <span className="shrink-0 mt-0.5">⚠</span>
+                  <span>{validationError}</span>
+                </div>
+              )}
               
               {/* Full Name input */}
               <div className="space-y-2">
@@ -365,8 +375,9 @@ export default function ReservarPage() {
           <aside className="lg:col-span-5 space-y-6">
             {/* Delivery/Pickup Details Card */}
             <div className="bg-primary/5 border border-primary/20 rounded-[24px] p-5 space-y-4">
-              <h3 className="font-serif text-sm font-bold text-primary uppercase tracking-wider">
-                📅 Detalles de Recojo/Entrega
+              <h3 className="font-serif text-sm font-bold text-primary uppercase tracking-wider flex items-center space-x-2">
+                <Calendar className="h-4 w-4 text-accent shrink-0" />
+                <span>Detalles de Recojo/Entrega</span>
               </h3>
 
               <div className="grid grid-cols-2 gap-3 text-xs font-sans">
