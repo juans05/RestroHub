@@ -1,0 +1,114 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  slug      String   @unique
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  dishes    Dish[]
+}
+
+model Dish {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Decimal  @db.Decimal(10, 2)
+  imageUrl    String?
+  isActive    Boolean  @default(true)
+  isAvailable Boolean  @default(true)
+  categoryId  String
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  order       Int      @default(0)
+}
+
+model Branch {
+  id        String   @id @default(uuid())
+  name      String
+  imageUrl  String?
+  address   String
+  phone     String
+  hours     Json
+  mapsUrl   String?
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orders    Order[]
+}
+
+model Order {
+  id            String      @id @default(uuid())
+  customerName  String
+  customerPhone String
+  branchId      String
+  branch        Branch      @relation(fields: [branchId], references: [id])
+  eventDate     DateTime
+  eventTime     String
+  peopleCount   Int
+  status        OrderStatus @default(PENDIENTE)
+  notes         String?
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  items         OrderItem[]
+}
+
+model OrderItem {
+  id       String  @id @default(uuid())
+  orderId  String
+  order    Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  dishName String
+  quantity Int
+  price    Decimal @db.Decimal(10, 2)
+}
+
+enum OrderStatus {
+  PENDIENTE
+  CONFIRMADO
+  EN_PREPARACION
+  ENTREGADO
+  CANCELADO
+}
+
+model SystemConfig {
+  id                       String   @id @default("global_config")
+  logoUrl                  String?
+  businessName             String   @default("Rauletti & Co.")
+  description              String?
+  primaryColor             String   @default("#6B1A2A")
+  secondaryColor           String   @default("#C5A059")
+  currencySymbol           String   @default("S/")
+  phone                    String?
+  address                  String?
+  timezone                 String   @default("America/Lima")
+  whatsapp                 String?
+  email                    String?
+  instagram                String?
+  facebook                 String?
+  twitter                  String?
+  tiktok                   String?
+  bannerTitle              String?  @default("El arte de la repostería artesanal")
+  bannerText               String?  @default("Déjate enamorar por nuestras tortas, postres y bebidas exquisitas que preparamos con dedicación.")
+  seoTitle                 String   @default("Rauletti & Co. | Carta Digital de Repostería Fina")
+  seoDescription           String   @default("Exquisita repostería artesanal con ingredientes premium. Reserva mesas y realiza pedidos en línea.")
+  maxPeoplePerReservation  Int      @default(20)
+  minOrderAdvanceHours     Int?
+  updatedAt                DateTime @updatedAt
+}
+
+model AdminUser {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  createdAt DateTime @default(now())
+}

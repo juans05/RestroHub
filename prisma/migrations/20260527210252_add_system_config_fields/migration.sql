@@ -1,0 +1,16 @@
+-- AlterTable
+ALTER TABLE "SystemConfig" ADD COLUMN     "address" TEXT,
+ADD COLUMN     "currencySymbol" TEXT NOT NULL DEFAULT 'S/',
+ADD COLUMN     "maxPeoplePerReservation" INTEGER NOT NULL DEFAULT 20,
+ADD COLUMN     "minOrderAdvanceHours" INTEGER,
+ADD COLUMN     "phone" TEXT,
+ADD COLUMN     "tiktok" TEXT,
+ADD COLUMN     "timezone" TEXT NOT NULL DEFAULT 'America/Lima',
+ADD COLUMN     "twitter" TEXT,
+ALTER COLUMN "businessName" SET DEFAULT 'Rauletti & Co.',
+ALTER COLUMN "primaryColor" SET DEFAULT '#6B1A2A',
+ALTER COLUMN "secondaryColor" SET DEFAULT '#C5A059',
+ALTER COLUMN "bannerTitle" SET DEFAULT 'El arte de la repostería artesanal',
+ALTER COLUMN "bannerText" SET DEFAULT 'Déjate enamorar por nuestras tortas, postres y bebidas exquisitas que preparamos con dedicación.',
+ALTER COLUMN "seoTitle" SET DEFAULT 'Rauletti & Co. | Carta Digital de Repostería Fina',
+ALTER COLUMN "seoDescription" SET DEFAULT 'Exquisita repostería artesanal con ingredientes premium. Reserva mesas y realiza pedidos en línea.';

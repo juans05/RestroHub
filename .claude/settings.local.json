@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsx *)",
+      "Bash(npx dotenv *)",
+      "PowerShell(Get-Content .env | ForEach-Object { if \\($_ -match '\\(.+\\)=\\(.+\\)'\\) { [Environment]::SetEnvironmentVariable\\($matches[1], $matches[2], 'Process'\\) } } && npx tsx prisma/seed.ts)",
+      "Bash(ls \"d:\\\\Proyecto_juans_\\\\Restuarante\\\\src\\\\app\\\\admin\" /s 2>&1)",
+      "Read(//d/s/**)",
+      "Bash(npm run *)"
+    ]
+  }
+}
