@@ -5,7 +5,7 @@
 ---
 
 ## Contexto del Proyecto
-
+lll
 RestroHub es una plataforma de gestión para restaurantes con carta digital, reservas y panel admin. El objetivo es convertirla en un **SaaS multi-tenant** donde cada restaurante pueda diseñar visualmente su propio sitio web desde el admin, similar a Shopify/PrestaShop.
 
 Stack actual: Next.js 16 (App Router) · TypeScript · Tailwind CSS 4 · Prisma 7 · PostgreSQL
