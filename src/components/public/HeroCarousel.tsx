@@ -67,6 +67,31 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     return () => clearTimeout(timer);
   }, [isAutoplayActive]);
 
+  if (!slides || slides.length === 0) {
+    return (
+      <section className="relative w-full h-screen max-h-[800px] sm:max-h-[600px] overflow-hidden bg-charcoal flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex flex-col justify-center items-start">
+          <div className="max-w-2xl space-y-6 w-full animate-pulse">
+            {/* Subtitle placeholder */}
+            <div className="inline-flex items-center space-x-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full h-8 w-32" />
+            
+            {/* Title placeholder */}
+            <div className="h-16 bg-white/10 rounded-2xl w-3/4" />
+            
+            {/* Description placeholder */}
+            <div className="space-y-2">
+              <div className="h-4 bg-white/5 rounded w-full" />
+              <div className="h-4 bg-white/5 rounded w-5/6" />
+            </div>
+            
+            {/* CTA placeholder */}
+            <div className="h-12 bg-white/10 rounded-2xl w-48" />
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   const currentSlide = slides[currentIndex];
 
   return (

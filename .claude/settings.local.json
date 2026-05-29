@@ -25,7 +25,10 @@
       "Bash(taskkill /PID 108 /F)",
       "PowerShell(Stop-Process -Id 108 -Force)",
       "Bash(timeout 30 pnpm dev)",
-      "Bash(timeout 45 pnpm dev)"
+      "Bash(timeout 45 pnpm dev)",
+      "Bash(npx next *)",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "mcp__plugin_playwright_playwright__browser_navigate"
     ]
   }
 }

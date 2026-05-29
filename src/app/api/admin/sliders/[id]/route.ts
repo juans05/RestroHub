@@ -1,8 +1,9 @@
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { sliderUpdateSchema } from "@/lib/validations";
 
 export async function PUT(
-  request: Request,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -11,8 +12,8 @@ export async function PUT(
     const result = sliderUpdateSchema.safeParse(body);
 
     if (!result.success) {
-      return Response.json(
-        { error: "Datos inválidos", details: result.error.errors },
+      return NextResponse.json(
+        { error: "Datos inválidos", details: result.error.issues },
         { status: 400 }
       );
     }
@@ -22,15 +23,16 @@ export async function PUT(
       data: result.data,
     });
 
-    return Response.json(slider);
+    return NextResponse.json(slider);
   } catch (error: any) {
     if (error.code === "P2025") {
-      return Response.json(
+      return NextResponse.json(
         { error: "Slider no encontrado" },
         { status: 404 }
       );
     }
-    return Response.json(
+    console.error("Error updating slider:", error);
+    return NextResponse.json(
       { error: "Error al actualizar slider" },
       { status: 500 }
     );
@@ -38,7 +40,7 @@ export async function PUT(
 }
 
 export async function DELETE(
-  request: Request,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
@@ -48,15 +50,16 @@ export async function DELETE(
       where: { id },
     });
 
-    return Response.json({ message: "Slider eliminado exitosamente" });
+    return NextResponse.json({ message: "Slider eliminado exitosamente" });
   } catch (error: any) {
     if (error.code === "P2025") {
-      return Response.json(
+      return NextResponse.json(
         { error: "Slider no encontrado" },
         { status: 404 }
       );
     }
-    return Response.json(
+    console.error("Error deleting slider:", error);
+    return NextResponse.json(
       { error: "Error al eliminar slider" },
       { status: 500 }
     );
