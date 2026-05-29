@@ -16,7 +16,16 @@
       "Bash(Get-ChildItem \"d:\\\\Github\\\\RestroHub\\\\RestroHub\\\\src\\\\generated\" -Recurse)",
       "Bash(Select-Object FullName)",
       "Bash(git add *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "WebFetch(domain:www.mariaalmenara.pe)",
+      "Bash(findstr \":3009\")",
+      "Bash(pkill -f \"node\")",
+      "Bash(rm -rf .next)",
+      "Bash(tee server.log)",
+      "Bash(taskkill /PID 108 /F)",
+      "PowerShell(Stop-Process -Id 108 -Force)",
+      "Bash(timeout 30 pnpm dev)",
+      "Bash(timeout 45 pnpm dev)"
     ]
   }
 }

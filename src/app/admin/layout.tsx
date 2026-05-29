@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingBag, BookOpen, MapPin, Settings, LayoutDashboard, LogOut, ShieldAlert, Menu, X } from 'lucide-react';
+import { ShoppingBag, BookOpen, MapPin, Settings, LayoutDashboard, LogOut, ShieldAlert, Menu, X, Images } from 'lucide-react';
 import { mockDB } from '@/lib/mockData';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -56,6 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Pedidos', href: '/admin/orders', icon: ShoppingBag },
     { name: 'Platos', href: '/admin/dishes', icon: BookOpen },
     { name: 'Sedes', href: '/admin/branches', icon: MapPin },
+    { name: 'Sliders', href: '/admin/sliders', icon: Images },
     { name: 'Ajustes CMS', href: '/admin/settings', icon: Settings },
   ];
 

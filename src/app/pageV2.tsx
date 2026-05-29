@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { HeaderV2 } from '@/components/public/HeaderV2';
 import { HeroCarousel } from '@/components/public/HeroCarousel';
@@ -11,64 +11,13 @@ import { FooterV2 } from '@/components/public/FooterV2';
 import { mockDB } from '@/lib/mockData';
 import { Heart, Clock, ShoppingBag, Award, ArrowRight } from 'lucide-react';
 
-interface HeroSlide {
-  id: string;
-  image: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  cta: {
-    text: string;
-    href: string;
-  };
-}
-
-export default function Home() {
+export default function HomeV2() {
   const config = mockDB.getConfig();
   const branches = mockDB.getBranches();
   const featuredDishes = mockDB.getDishes().slice(0, 3);
 
-  const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
-  const [loadingSlides, setLoadingSlides] = useState(true);
-
-  useEffect(() => {
-    const fetchSlides = async () => {
-      try {
-        const response = await fetch('/api/sliders');
-        if (response.ok) {
-          const sliders = await response.json();
-
-          if (sliders.length > 0) {
-            const mappedSlides = sliders.map((slider: any) => ({
-              id: slider.id,
-              image: slider.imageUrl,
-              title: slider.title,
-              subtitle: slider.subtitle || '',
-              description: slider.description || '',
-              cta: {
-                text: slider.ctaText || 'Ver Más',
-                href: slider.ctaHref || '/menu',
-              },
-            }));
-            setHeroSlides(mappedSlides);
-          } else {
-            // Fallback to default slides if none in DB
-            setHeroSlides(getDefaultSlides());
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching sliders:', error);
-        // Use default slides on error
-        setHeroSlides(getDefaultSlides());
-      } finally {
-        setLoadingSlides(false);
-      }
-    };
-
-    fetchSlides();
-  }, []);
-
-  const getDefaultSlides = (): HeroSlide[] => [
+  // Hero Carousel Slides
+  const heroSlides = [
     {
       id: '1',
       image: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=1200&auto=format&fit=crop&q=80',
@@ -88,7 +37,7 @@ export default function Home() {
       description: 'Personaliza tu torta para bodas, cumpleaños y ocasiones memorables.',
       cta: {
         text: 'Solicitar Catering',
-        href: '/catering',
+        href: '#catering',
       },
     },
     {
@@ -109,8 +58,10 @@ export default function Home() {
       <HeaderV2 />
       <CartDrawer />
 
+      {/* Hero Carousel */}
       <HeroCarousel slides={heroSlides} autoplay={true} autoplayInterval={5000} />
 
+      {/* Propuesta de Valor - Banner */}
       <section className="py-12 md:py-16 bg-gradient-to-r from-primary to-primary-dark text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_2px_2px,_rgba(255,255,255,0.8)_1px,_transparent_1px)] bg-[length:20px_20px]" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
@@ -125,11 +76,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Key Pillars / Value Propositions */}
       <section className="py-16 md:py-24 bg-card-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+
             <div className="flex flex-col items-center text-center p-8 bg-canvas border border-accent/10 rounded-[28px] hover:border-accent/30 hover:shadow-md transition-all duration-300">
-              <div className="h-14 w-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 border border-accent/15">
+              <div className="h-14 w-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 border border-accent/15 group-hover:bg-accent/20">
                 <Heart className="h-7 w-7 text-accent" />
               </div>
               <h3 className="font-serif text-lg font-extrabold text-charcoal mb-3">Ingredientes Premium</h3>
@@ -157,14 +110,18 @@ export default function Home() {
                 Elige online, confirma por WhatsApp. Simple, rápido y con atención personalizada.
               </p>
             </div>
+
           </div>
         </div>
       </section>
 
+      {/* Featured Services */}
       <FeaturedServices />
 
+      {/* Categories Showcase */}
       <CategoriesShowcase />
 
+      {/* Featured Dishes */}
       <section className="py-24 md:py-32 bg-card-bg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -228,6 +185,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Branches Showcase */}
       {branches.length > 0 && (
         <section className="py-24 md:py-32 bg-canvas">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -278,6 +236,7 @@ export default function Home() {
         </section>
       )}
 
+      {/* Final CTA Section */}
       <section className="py-20 md:py-28 bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal text-white relative overflow-hidden border-b border-accent/20">
         <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_50%,rgba(197,160,89,0.1)_0%,transparent_50%)]" />
         <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_80%_80%,rgba(107,26,42,0.1)_0%,transparent_50%)]" />

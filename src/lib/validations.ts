@@ -83,3 +83,16 @@ export const settingsUpdateSchema = z.object({
   maxPeoplePerReservation: z.number().int().positive().optional(),
   minOrderAdvanceHours: z.number().int().nonnegative().optional(),
 });
+
+export const sliderSchema = z.object({
+  title: z.string().min(1, "El título es requerido"),
+  subtitle: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  imageUrl: z.string().min(1, "La URL de imagen es requerida"),
+  ctaText: z.string().optional().nullable(),
+  ctaHref: z.string().optional().nullable(),
+  isActive: z.boolean().optional(),
+  order: z.number().int().min(0).default(0),
+});
+
+export const sliderUpdateSchema = sliderSchema.partial();

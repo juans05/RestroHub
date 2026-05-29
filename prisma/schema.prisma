@@ -112,3 +112,17 @@ model AdminUser {
   name      String?
   createdAt DateTime @default(now())
 }
+
+model Slider {
+  id          String   @id @default(uuid())
+  title       String
+  subtitle    String?
+  description String?
+  imageUrl    String
+  ctaText     String?
+  ctaHref     String?
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
