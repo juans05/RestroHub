@@ -1,0 +1,27 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e7] [cursor=pointer]:
+    - img [ref=e8]
+  - alert [ref=e11]
+  - main [ref=e15]:
+    - generic [ref=e16]:
+      - img [ref=e18]
+      - generic [ref=e21]:
+        - heading "Panel Administrador" [level=1] [ref=e22]
+        - paragraph [ref=e23]: Resto-CMS Management
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]: Correo Electrónico
+        - generic [ref=e27]:
+          - generic:
+            - img
+          - textbox "admin@restocms.com" [ref=e28]
+      - generic [ref=e29]:
+        - generic [ref=e31]: Contraseña
+        - generic [ref=e32]:
+          - generic:
+            - img
+          - textbox "••••••••••••" [ref=e33]
+      - button "Entrar al Panel" [ref=e35]:
+        - generic [ref=e36]: Entrar al Panel
+    - link "← Volver al Sitio Público" [ref=e38] [cursor=pointer]:
+      - /url: /

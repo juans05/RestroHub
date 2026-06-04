@@ -25,13 +25,7 @@
       "Bash(taskkill /PID 108 /F)",
       "PowerShell(Stop-Process -Id 108 -Force)",
       "Bash(timeout 30 pnpm dev)",
-      "Bash(timeout 45 pnpm dev)",
-      "Bash(node .claude/skills/impeccable/scripts/context.mjs)",
-      "Bash(taskkill /PID 4536 /F)",
-      "Bash(taskkill /PID 35264 /F)",
-      "Bash(curl -s http://localhost:3004/api/public/faqs)",
-      "Bash(taskkill /PID 48220 /F)",
-      "Bash(curl -s http://localhost:3000/api/public/faqs)"
+      "Bash(timeout 45 pnpm dev)"
     ]
   }
 }
