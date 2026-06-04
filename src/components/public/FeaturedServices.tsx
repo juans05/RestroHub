@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Gift, Users, Clock, ArrowRight } from 'lucide-react';
 
@@ -45,15 +45,57 @@ const defaultServices: Service[] = [
   },
 ];
 
+const iconMap: Record<string, React.ReactNode> = {
+  gift: <Gift className="h-8 w-8" />,
+  users: <Users className="h-8 w-8" />,
+  clock: <Clock className="h-8 w-8" />,
+};
+
 interface FeaturedServicesProps {
   services?: Service[];
   tagline?: string;
+  title?: string;
+  description?: string;
 }
 
 export const FeaturedServices: React.FC<FeaturedServicesProps> = ({
-  services = defaultServices,
+  services: propServices,
   tagline = 'Servicios Especiales',
+  title = 'Más allá de lo ordinario',
+  description = 'Servicios personalizados para cada ocasión. Desde tu fiesta más especial hasta las celebraciones de tu empresa.',
 }) => {
+  const [loadedServices, setLoadedServices] = useState<Service[]>(propServices || defaultServices);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        const response = await fetch('/api/public/services');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setLoadedServices(data.map((s: any) => ({
+              id: s.id,
+              title: s.title,
+              description: s.description,
+              image: s.imageUrl || 'https://images.unsplash.com/photo-1555935338-8c1f4b4a0e6d?w=600&auto=format&fit=crop&q=80',
+              icon: iconMap[s.icon] || <Gift className="h-8 w-8" />,
+              cta: {
+                text: s.ctaText || 'Más información',
+                href: s.ctaHref || '#',
+              },
+              badge: s.badge || undefined,
+              highlight: s.isHighlighted || false,
+            })));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching services:', error);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   return (
     <section className="py-20 md:py-28 bg-gradient-to-b from-canvas via-card-bg to-canvas">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -65,16 +107,16 @@ export const FeaturedServices: React.FC<FeaturedServicesProps> = ({
             <span>{tagline}</span>
           </span>
           <h2 className="font-serif text-4xl md:text-5xl font-black text-charcoal leading-[1.1]">
-            Más allá de lo ordinario
+            {title}
           </h2>
           <p className="font-sans text-base text-charcoal-light max-w-2xl mx-auto leading-relaxed">
-            Servicios personalizados para cada ocasión. Desde tu fiesta más especial hasta las celebraciones de tu empresa.
+            {description}
           </p>
         </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10">
-          {services.map((service, index) => (
+          {loadedServices.map((service, index) => (
             <div
               key={service.id}
               className={`group relative overflow-hidden rounded-[32px] border transition-all duration-300 hover:shadow-xl ${

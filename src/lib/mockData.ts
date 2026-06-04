@@ -57,6 +57,9 @@ export interface SystemConfig {
   description: string;
   primaryColor: string;
   secondaryColor: string;
+  accentColor?: string;
+  fontDisplay?: string;
+  fontBody?: string;
   whatsapp: string;
   email: string;
   instagram: string;
@@ -65,6 +68,17 @@ export interface SystemConfig {
   bannerText: string;
   seoTitle: string;
   seoDescription: string;
+  servicesTagline: string;
+  servicesTitle: string;
+  servicesDescription: string;
+  categoriesTagline: string;
+  categoriesTitle: string;
+  bestsellersTagline: string;
+  bestsellersTitle: string;
+  bestsellersDescription: string;
+  branchesTagline: string;
+  branchesTitle: string;
+  branchesDescription: string;
 }
 
 // Initial Data Seeds
@@ -311,8 +325,11 @@ export const initialConfig: SystemConfig = {
   logoUrl: "/logo.png",
   businessName: "Rauletti & Co.",
   description: "Repostería fina y salados artesanales elaborados con amor y los mejores ingredientes.",
-  primaryColor: "#6B1A2A",
-  secondaryColor: "#C5A059",
+  primaryColor: "#E8621A",
+  secondaryColor: "#C94E0F",
+  accentColor: "#FF6B9D",
+  fontDisplay: "Fredoka",
+  fontBody: "Nunito",
   whatsapp: "+51 987 654 321",
   email: "contacto@rauletti.com",
   instagram: "https://instagram.com/rauletti.co",
@@ -320,7 +337,18 @@ export const initialConfig: SystemConfig = {
   bannerTitle: "El arte de la repostería artesanal",
   bannerText: "Déjate enamorar por nuestras tortas, quiches y cafés preparados a mano diariamente. Reserva tu mesa o solicita tu pedido para recoger en tu sede favorita.",
   seoTitle: "Rauletti & Co. | Carta Digital, Tortas y Reservas Premium",
-  seoDescription: "Exquisita repostería fina, empanadas, salados y desayunos. Ordena en línea y agenda tu reserva para disfrutar de una dulce experiencia en San Isidro, Miraflores y Surco."
+  seoDescription: "Exquisita repostería fina, empanadas, salados y desayunos. Ordena en línea y agenda tu reserva para disfrutar de una dulce experiencia en San Isidro, Miraflores y Surco.",
+  servicesTagline: "Servicios Especiales",
+  servicesTitle: "Más allá de lo ordinario",
+  servicesDescription: "Servicios personalizados para cada ocasión. Desde tu fiesta más especial hasta las celebraciones de tu empresa.",
+  categoriesTagline: "Catálogo Completo",
+  categoriesTitle: "Explora Nuestras Categorías",
+  bestsellersTagline: "Bestsellers",
+  bestsellersTitle: "Antojos Más Aclamados",
+  bestsellersDescription: "Las recetas clásicas más solicitadas. Probadas y aprobadas por nuestros clientes.",
+  branchesTagline: "Visítanos",
+  branchesTitle: "Nuestras Sedes",
+  branchesDescription: "Encuentra la sucursal más cercana a ti."
 };
 
 // Initial Orders Mock (for Admin Panel)

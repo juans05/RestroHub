@@ -12,7 +12,7 @@ export async function PUT(
 
     if (!result.success) {
       return Response.json(
-        { error: "Datos inválidos", details: result.error.errors },
+        { error: "Datos inválidos", details: result.error.issues },
         { status: 400 }
       );
     }

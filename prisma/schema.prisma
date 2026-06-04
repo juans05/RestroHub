@@ -8,13 +8,17 @@ datasource db {
 }
 
 model Category {
-  id        String   @id @default(uuid())
-  name      String   @unique
-  slug      String   @unique
-  order     Int      @default(0)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  dishes    Dish[]
+  id          String   @id @default(uuid())
+  name        String   @unique
+  slug        String   @unique
+  order       Int      @default(0)
+  imageUrl    String?
+  description String?
+  colorFrom   String   @default("from-primary/40")
+  colorTo     String   @default("to-accent/40")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  dishes      Dish[]
 }
 
 model Dish {
@@ -84,8 +88,13 @@ model SystemConfig {
   logoUrl                  String?
   businessName             String   @default("Rauletti & Co.")
   description              String?
-  primaryColor             String   @default("#6B1A2A")
-  secondaryColor           String   @default("#C5A059")
+  primaryColor             String   @default("#E8621A")
+  secondaryColor           String   @default("#C94E0F")
+  accentColor              String   @default("#FF6B9D")
+  fontDisplay              String   @default("Fredoka")
+  fontBody                 String   @default("Nunito")
+  animationsEnabled        Boolean  @default(true)
+  animationSpeed           String   @default("normal")
   currencySymbol           String   @default("S/")
   phone                    String?
   address                  String?
@@ -102,6 +111,21 @@ model SystemConfig {
   seoDescription           String   @default("Exquisita repostería artesanal con ingredientes premium. Reserva mesas y realiza pedidos en línea.")
   maxPeoplePerReservation  Int      @default(20)
   minOrderAdvanceHours     Int?
+  ctaTitle                 String?  @default("¿Lista para el mejor postre?")
+  ctaText                  String?  @default("Pide online, recoge en tienda o pídelo a domicilio.")
+  ctaButton                String?  @default("Comenzar Pedido")
+  navLinks                 Json     @default("[{\"label\":\"Menú\",\"href\":\"/menu\"},{\"label\":\"Sedes\",\"href\":\"/branches\"},{\"label\":\"Reservar\",\"href\":\"/reservations\"}]")
+  servicesTagline          String   @default("Servicios Especiales")
+  servicesTitle            String   @default("Más allá de lo ordinario")
+  servicesDescription      String   @default("Servicios personalizados para cada ocasión. Desde tu fiesta más especial hasta las celebraciones de tu empresa.")
+  categoriesTagline        String   @default("Catálogo Completo")
+  categoriesTitle          String   @default("Explora Nuestras Categorías")
+  bestsellersTagline       String   @default("Bestsellers")
+  bestsellersTitle         String   @default("Antojos Más Aclamados")
+  bestsellersDescription   String   @default("Las recetas clásicas más solicitadas. Probadas y aprobadas por nuestros clientes.")
+  branchesTagline          String   @default("Visítanos")
+  branchesTitle            String   @default("Nuestras Sedes")
+  branchesDescription      String   @default("Encuentra la sucursal más cercana a ti.")
   updatedAt                DateTime @updatedAt
 }
 
@@ -121,8 +145,35 @@ model Slider {
   imageUrl    String
   ctaText     String?
   ctaHref     String?
+  type        String   @default("HERO")
   isActive    Boolean  @default(true)
   order       Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model Service {
+  id            String   @id @default(uuid())
+  title         String
+  description   String
+  imageUrl      String?
+  icon          String   @default("gift")
+  ctaText       String?
+  ctaHref       String?
+  badge         String?
+  isHighlighted Boolean  @default(false)
+  isActive      Boolean  @default(true)
+  order         Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model FAQ {
+  id        String   @id @default(uuid())
+  question  String
+  answer    String
+  isActive  Boolean  @default(true)
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

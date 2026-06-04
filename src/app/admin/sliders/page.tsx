@@ -11,6 +11,7 @@ interface Slider {
   imageUrl: string;
   ctaText: string | null;
   ctaHref: string | null;
+  type: string;
   isActive: boolean;
   order: number;
 }
@@ -22,6 +23,7 @@ interface FormData {
   imageUrl: string;
   ctaText: string;
   ctaHref: string;
+  type: string;
   isActive: boolean;
   order: number;
 }
@@ -41,6 +43,7 @@ export default function SlidersPage() {
     imageUrl: '',
     ctaText: '',
     ctaHref: '',
+    type: 'HERO',
     isActive: true,
     order: 0,
   });
@@ -72,6 +75,7 @@ export default function SlidersPage() {
       imageUrl: '',
       ctaText: '',
       ctaHref: '',
+      type: 'HERO',
       isActive: true,
       order: 0,
     });
@@ -91,6 +95,7 @@ export default function SlidersPage() {
       imageUrl: slider.imageUrl,
       ctaText: slider.ctaText || '',
       ctaHref: slider.ctaHref || '',
+      type: slider.type || 'HERO',
       isActive: slider.isActive,
       order: slider.order,
     });
@@ -98,7 +103,7 @@ export default function SlidersPage() {
     setShowDrawer(true);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
@@ -206,6 +211,7 @@ export default function SlidersPage() {
               <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Imagen</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Título</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Subtítulo</th>
+              <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Ubicación</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Orden</th>
               <th className="px-6 py-4 text-left text-sm font-semibold text-charcoal">Estado</th>
               <th className="px-6 py-4 text-right text-sm font-semibold text-charcoal">Acciones</th>
@@ -233,6 +239,13 @@ export default function SlidersPage() {
                   </td>
                   <td className="px-6 py-4">
                     <p className="text-sm text-charcoal-light">{slider.subtitle || '-'}</p>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold ${
+                      slider.type === 'HERO' ? 'bg-blue-100 text-blue-700' : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {slider.type === 'HERO' ? 'Header' : 'Banner'}
+                    </span>
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-gray-100 text-charcoal">
@@ -275,7 +288,7 @@ export default function SlidersPage() {
       {showDrawer && (
         <div className="fixed inset-0 z-50 overflow-hidden">
           <div className="absolute inset-0 bg-black/50" onClick={() => !submitting && setShowDrawer(false)} />
-          <div className="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl overflow-y-auto">
+          <div className="fixed right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl overflow-y-auto">
             <div className="p-6 space-y-6">
               {/* Header */}
               <div className="flex justify-between items-center">
@@ -382,6 +395,23 @@ export default function SlidersPage() {
                     placeholder="Ej: /menu"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-primary focus:outline-none"
                   />
+                </div>
+
+                {/* Type */}
+                <div>
+                  <label className="block text-sm font-semibold text-charcoal mb-2">
+                    Ubicación del Slider *
+                  </label>
+                  <select
+                    name="type"
+                    value={formData.type}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:border-primary focus:outline-none"
+                    required
+                  >
+                    <option value="HERO">Carrusel Principal (Header)</option>
+                    <option value="BANNER">Carrusel Lateral (Banner)</option>
+                  </select>
                 </div>
 
                 {/* Order */}

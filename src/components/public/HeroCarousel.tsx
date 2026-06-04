@@ -69,6 +69,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
   const currentSlide = slides[currentIndex];
 
+  if (!currentSlide) {
+    return <div className="w-full h-screen max-h-[800px] sm:max-h-[600px] bg-charcoal" />;
+  }
+
   return (
     <section className="relative w-full h-screen max-h-[800px] sm:max-h-[600px] overflow-hidden bg-charcoal">
 

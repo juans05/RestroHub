@@ -8,6 +8,10 @@ export const loginSchema = z.object({
 export const categorySchema = z.object({
   name: z.string().min(1, "El nombre es requerido"),
   slug: z.string().min(1).optional(),
+  imageUrl: z.string().optional().nullable(),
+  description: z.string().optional().nullable(),
+  colorFrom: z.string().default("from-primary/40"),
+  colorTo: z.string().default("to-accent/40"),
   order: z.number().int().min(0).default(0),
 });
 
@@ -66,6 +70,11 @@ export const settingsUpdateSchema = z.object({
   description: z.string().optional().nullable(),
   primaryColor: z.string().optional(),
   secondaryColor: z.string().optional(),
+  accentColor: z.string().optional(),
+  fontDisplay: z.string().optional(),
+  fontBody: z.string().optional(),
+  animationsEnabled: z.boolean().optional(),
+  animationSpeed: z.enum(['slow', 'normal', 'fast']).optional(),
   currencySymbol: z.string().optional(),
   phone: z.string().optional().nullable(),
   address: z.string().optional().nullable(),
@@ -82,6 +91,21 @@ export const settingsUpdateSchema = z.object({
   seoDescription: z.string().optional(),
   maxPeoplePerReservation: z.number().int().positive().optional(),
   minOrderAdvanceHours: z.number().int().nonnegative().optional(),
+  ctaTitle: z.string().optional().nullable(),
+  ctaText: z.string().optional().nullable(),
+  ctaButton: z.string().optional().nullable(),
+  navLinks: z.array(z.object({ label: z.string().min(1), href: z.string().min(1) })).optional(),
+  servicesTagline: z.string().optional(),
+  servicesTitle: z.string().optional(),
+  servicesDescription: z.string().optional(),
+  categoriesTagline: z.string().optional(),
+  categoriesTitle: z.string().optional(),
+  bestsellersTagline: z.string().optional(),
+  bestsellersTitle: z.string().optional(),
+  bestsellersDescription: z.string().optional(),
+  branchesTagline: z.string().optional(),
+  branchesTitle: z.string().optional(),
+  branchesDescription: z.string().optional(),
 });
 
 export const sliderSchema = z.object({
@@ -91,8 +115,44 @@ export const sliderSchema = z.object({
   imageUrl: z.string().min(1, "La URL de imagen es requerida"),
   ctaText: z.string().optional().nullable(),
   ctaHref: z.string().optional().nullable(),
+  type: z.enum(["HERO", "BANNER"]).default("HERO"),
   isActive: z.boolean().optional(),
   order: z.number().int().min(0).default(0),
 });
 
 export const sliderUpdateSchema = sliderSchema.partial();
+
+export const faqSchema = z.object({
+  question: z.string().min(1, "La pregunta es requerida"),
+  answer: z.string().min(1, "La respuesta es requerida"),
+  isActive: z.boolean().default(true),
+  order: z.number().int().min(0).default(0),
+});
+
+export const faqUpdateSchema = faqSchema.partial();
+
+export const featureSchema = z.object({
+  title: z.string().min(1, "El título es requerido"),
+  description: z.string().min(1, "La descripción es requerida"),
+  icon: z.string().default("heart"),
+  isHighlighted: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  order: z.number().int().min(0).default(0),
+});
+
+export const featureUpdateSchema = featureSchema.partial();
+
+export const serviceSchema = z.object({
+  title: z.string().min(1, "El título es requerido"),
+  description: z.string().min(1, "La descripción es requerida"),
+  imageUrl: z.string().optional().nullable(),
+  icon: z.string().default("gift"),
+  ctaText: z.string().optional().nullable(),
+  ctaHref: z.string().optional().nullable(),
+  badge: z.string().optional().nullable(),
+  isHighlighted: z.boolean().default(false),
+  isActive: z.boolean().default(true),
+  order: z.number().int().min(0).default(0),
+});
+
+export const serviceUpdateSchema = serviceSchema.partial();

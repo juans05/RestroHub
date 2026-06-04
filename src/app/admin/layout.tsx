@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ShoppingBag, BookOpen, MapPin, Settings, LayoutDashboard, LogOut, ShieldAlert, Menu, X, Images } from 'lucide-react';
+import { ShoppingBag, BookOpen, MapPin, Settings, LayoutDashboard, LogOut, ShieldAlert, Menu, X, Images, Sparkles, HelpCircle, Gift, Tag } from 'lucide-react';
 import { mockDB } from '@/lib/mockData';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -57,6 +57,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { name: 'Platos', href: '/admin/dishes', icon: BookOpen },
     { name: 'Sedes', href: '/admin/branches', icon: MapPin },
     { name: 'Sliders', href: '/admin/sliders', icon: Images },
+    { name: 'Características', href: '/admin/features', icon: Sparkles },
+    { name: 'Servicios', href: '/admin/services', icon: Gift },
+    { name: 'Categorías', href: '/admin/categories', icon: Tag },
+    { name: 'FAQs', href: '/admin/faqs', icon: HelpCircle },
     { name: 'Ajustes CMS', href: '/admin/settings', icon: Settings },
   ];
 

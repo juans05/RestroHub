@@ -32,6 +32,7 @@ export async function PUT(request: NextRequest) {
     const parsed = settingsUpdateSchema.safeParse(body);
 
     if (!parsed.success) {
+      console.error("Validation errors:", parsed.error.flatten());
       return NextResponse.json(
         { error: "Datos inválidos", details: parsed.error.flatten() },
         { status: 400 }

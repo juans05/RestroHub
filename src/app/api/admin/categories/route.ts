@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { name, slug, order } = parsed.data;
+    const { name, slug, imageUrl, description, colorFrom, colorTo, order } = parsed.data;
     const generatedSlug = slug || name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
 
     const category = await prisma.category.create({
-      data: { name, slug: generatedSlug, order },
+      data: { name, slug: generatedSlug, imageUrl, description, colorFrom, colorTo, order },
     });
 
     return NextResponse.json(category, { status: 201 });

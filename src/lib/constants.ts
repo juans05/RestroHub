@@ -1,9 +1,12 @@
-// System Configuration Defaults
+// System Configuration Defaults - Pastelería Divertida Theme
 export const DEFAULT_SYSTEM_CONFIG = {
   businessName: "Rauletti & Co.",
   description: "Repostería fina artesanal con ingredientes premium",
-  primaryColor: "#6B1A2A",
-  secondaryColor: "#C5A059",
+  primaryColor: "#E8621A", // Naranja cálido Rauletti
+  secondaryColor: "#C94E0F", // Naranja oscuro (dark variant)
+  accentColor: "#FF6B9D", // Rosa pastelería
+  fontDisplay: "Fredoka", // Display font para títulos
+  fontBody: "Nunito", // Body font para textos
   currencySymbol: "S/",
   timezone: "America/Lima",
   bannerTitle: "El arte de la repostería artesanal",

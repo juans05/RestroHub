@@ -8,6 +8,11 @@ export interface SystemConfig {
   description?: string;
   primaryColor: string;
   secondaryColor: string;
+  accentColor?: string;
+  fontDisplay?: string;
+  fontBody?: string;
+  animationsEnabled?: boolean;
+  animationSpeed?: string;
   currencySymbol: string;
   phone?: string;
   address?: string;
@@ -24,6 +29,10 @@ export interface SystemConfig {
   seoDescription: string;
   maxPeoplePerReservation: number;
   minOrderAdvanceHours?: number;
+  ctaTitle?: string;
+  ctaText?: string;
+  ctaButton?: string;
+  navLinks?: { label: string; href: string }[];
 }
 
 export function useSystemConfig() {

@@ -38,7 +38,26 @@ export const FooterV2: React.FC = () => {
   const { config, loading } = useSystemConfig();
   const [expandedFAQ, setExpandedFAQ] = useState<string | null>(null);
   const [emailInput, setEmailInput] = useState('');
+  const [faqs, setFaqs] = useState<FAQItem[]>(defaultFAQs);
   const currentYear = new Date().getFullYear();
+
+  React.useEffect(() => {
+    const fetchFAQs = async () => {
+      try {
+        const response = await fetch('/api/public/faqs');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setFaqs(data);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching FAQs:', error);
+      }
+    };
+
+    fetchFAQs();
+  }, []);
 
   const whatsappNumber = config?.whatsapp?.replace(/\D/g, '');
   const whatsappUrl = whatsappNumber ? `https://wa.me/${whatsappNumber}` : '#';
@@ -109,7 +128,7 @@ export const FooterV2: React.FC = () => {
           </div>
 
           <div className="max-w-3xl mx-auto space-y-3">
-            {defaultFAQs.map((faq) => (
+            {faqs.map((faq) => (
               <div
                 key={faq.id}
                 className="border border-accent/20 rounded-xl overflow-hidden bg-charcoal/50 hover:border-accent/40 transition-colors"

@@ -3,13 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { HeaderV2 } from '@/components/public/HeaderV2';
-import { HeroCarousel } from '@/components/public/HeroCarousel';
 import { FeaturedServices } from '@/components/public/FeaturedServices';
 import { CategoriesShowcase } from '@/components/public/CategoriesShowcase';
 import { CartDrawer } from '@/components/public/CartDrawer';
 import { FooterV2 } from '@/components/public/FooterV2';
-import { mockDB } from '@/lib/mockData';
-import { Heart, Clock, ShoppingBag, Award, ArrowRight } from 'lucide-react';
+import { FeaturesSection } from '@/components/public/FeaturesSection';
+import { HeroCarousel } from '@/components/public/HeroCarousel';
+import { Award, ArrowRight, ShoppingBag } from 'lucide-react';
 
 interface HeroSlide {
   id: string;
@@ -24,12 +24,36 @@ interface HeroSlide {
 }
 
 export default function Home() {
-  const config = mockDB.getConfig();
-  const branches = mockDB.getBranches();
-  const featuredDishes = mockDB.getDishes().slice(0, 3);
+  const [config, setConfig] = useState<any>({});
+  const [featuredDishes, setFeaturedDishes] = useState<any[]>([]);
+  const [branches, setBranches] = useState<any[]>([]);
+  const [activeSlideIndex, setActiveSlideIndex] = useState(0);
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/public/settings').then(r => r.json()),
+      fetch('/api/public/dishes?limit=3').then(r => r.json()),
+      fetch('/api/public/branches').then(r => r.json()),
+    ]).then(([conf, dishes, segs]) => {
+      setConfig(conf);
+      setFeaturedDishes(Array.isArray(dishes) ? dishes : []);
+      setBranches(Array.isArray(segs) ? segs : []);
+    });
+  }, []);
 
   const [heroSlides, setHeroSlides] = useState<HeroSlide[]>([]);
   const [loadingSlides, setLoadingSlides] = useState(true);
+
+  const [mainHeroSlides, setMainHeroSlides] = useState<HeroSlide[]>([]);
+  const [rightBannerSlides, setRightBannerSlides] = useState<HeroSlide[]>([]);
+
+  useEffect(() => {
+    if (rightBannerSlides.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveSlideIndex((prevIndex) => (prevIndex + 1) % rightBannerSlides.length);
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [rightBannerSlides]);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -38,28 +62,35 @@ export default function Home() {
         if (response.ok) {
           const sliders = await response.json();
 
-          if (sliders.length > 0) {
+          if (Array.isArray(sliders) && sliders.length > 0) {
             const mappedSlides = sliders.map((slider: any) => ({
               id: slider.id,
               image: slider.imageUrl,
               title: slider.title,
               subtitle: slider.subtitle || '',
               description: slider.description || '',
+              type: slider.type || 'HERO',
               cta: {
                 text: slider.ctaText || 'Ver Más',
                 href: slider.ctaHref || '/menu',
               },
             }));
             setHeroSlides(mappedSlides);
+            setMainHeroSlides(mappedSlides.filter((s: HeroSlide & { type?: string }) => s.type === 'HERO'));
+            setRightBannerSlides(mappedSlides.filter((s: HeroSlide & { type?: string }) => s.type === 'BANNER'));
           } else {
-            // Fallback to default slides if none in DB
-            setHeroSlides(getDefaultSlides());
+            const defaults = getDefaultSlides();
+            setHeroSlides(defaults);
+            setMainHeroSlides(defaults);
+            setRightBannerSlides([]);
           }
         }
       } catch (error) {
         console.error('Error fetching sliders:', error);
-        // Use default slides on error
-        setHeroSlides(getDefaultSlides());
+        const defaults = getDefaultSlides();
+        setHeroSlides(defaults);
+        setMainHeroSlides(defaults);
+        setRightBannerSlides([]);
       } finally {
         setLoadingSlides(false);
       }
@@ -109,122 +140,205 @@ export default function Home() {
       <HeaderV2 />
       <CartDrawer />
 
-      <HeroCarousel slides={heroSlides} autoplay={true} autoplayInterval={5000} />
+      {/* Hero Carousel */}
+      <HeroCarousel slides={mainHeroSlides} />
 
-      <section className="py-12 md:py-16 bg-gradient-to-r from-primary to-primary-dark text-white relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_2px_2px,_rgba(255,255,255,0.8)_1px,_transparent_1px)] bg-[length:20px_20px]" />
+      <section className="py-24 md:py-32 bg-canvas relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-full blur-3xl -z-10" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-accent/10 rounded-full blur-3xl -z-10" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            {/* Contenido */}
+            <div className="space-y-6 animate-float-up" style={{animationDelay: '0.1s'}}>
+              <div className="inline-block">
+                <span className="bg-primary/10 border border-primary/30 px-4 py-2 rounded-full font-sans text-xs font-bold text-primary uppercase tracking-wider">
+                  ✨ Artesanía Premium
+                </span>
+              </div>
+              <h2 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-black text-charcoal leading-[1.1]">
+                {config.bannerTitle || "El arte de la repostería"}
+              </h2>
+              <p className="font-sans text-lg text-charcoal-light leading-relaxed max-w-xl">
+                {config.bannerText || "Cada postre cuenta una historia de pasión, calidad y dedicación. Hecho a mano, todos los días."}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 pt-4">
+                <Link href="/menu" className="bg-primary hover:bg-primary-dark text-white font-sans font-bold py-4 px-8 rounded-2xl shadow-lg transition-all duration-300 hover:scale-105 active:scale-95 flex items-center justify-center gap-2">
+                  <span>Comenzar Pedido</span>
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                  </svg>
+                </Link>
+                <Link href="/menu" className="border-2 border-primary text-primary hover:bg-primary/5 font-sans font-bold py-4 px-8 rounded-2xl transition-all duration-300 text-center flex items-center justify-center">
+                  Ver Catálogo
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Banner Carousel */}
+            <div className="relative animate-float-up" style={{animationDelay: '0.3s'}}>
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-accent/20 rounded-3xl blur-2xl" />
+              <div className="relative bg-gradient-to-br from-primary to-accent rounded-3xl p-8 transform hover:scale-[1.02] transition-transform duration-500">
+                <div className="aspect-square bg-canvas rounded-2xl overflow-hidden flex flex-col justify-between p-6 relative group">
+                  {rightBannerSlides.length > 0 ? (
+                    (() => {
+                      const currentSlide = rightBannerSlides[activeSlideIndex];
+                      return (
+                        <div key={currentSlide.id} className="h-full flex flex-col justify-between animate-fade-in duration-500">
+                          <div className="relative h-2/3 w-full rounded-xl overflow-hidden bg-gradient-to-br from-primary/10 to-accent/10">
+                            <img
+                              src={currentSlide.image}
+                              alt={currentSlide.title}
+                              className="h-full w-full object-cover transition-transform duration-700 hover:scale-110"
+                            />
+                            {currentSlide.subtitle && (
+                              <div className="absolute top-3 left-3">
+                                <span className="bg-accent text-white font-sans text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-md">
+                                  {currentSlide.subtitle}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                          <div className="pt-4 flex items-center justify-between">
+                            <div className="space-y-1 max-w-[65%]">
+                              <h3 className="font-serif text-lg font-black text-charcoal truncate">
+                                {currentSlide.title}
+                              </h3>
+                              <p className="font-sans text-xs text-charcoal-light line-clamp-1">
+                                {currentSlide.description}
+                              </p>
+                            </div>
+                            {currentSlide.cta && (
+                              <Link
+                                href={currentSlide.cta.href || '/menu'}
+                                className="bg-primary hover:bg-primary-dark text-white font-sans font-bold text-xs py-2.5 px-4 rounded-xl shadow-md transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-1"
+                              >
+                                <span>{currentSlide.cta.text || 'Ver'}</span>
+                                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                                </svg>
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })()
+                  ) : (
+                    <div className="h-full flex flex-col items-center justify-center text-center">
+                      <svg className="w-24 h-24 text-primary mb-4 animate-bounce" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                      <p className="font-serif text-2xl font-bold text-charcoal">Pasteles Frescos Diarios</p>
+                    </div>
+                  )}
+
+                  {rightBannerSlides.length > 1 && (
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                      {rightBannerSlides.map((_, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveSlideIndex(idx)}
+                          className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                            idx === activeSlideIndex ? 'bg-primary scale-125' : 'bg-charcoal/20'
+                          }`}
+                          aria-label={`Ir al slide ${idx + 1}`}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <FeaturesSection />
+
+      <FeaturedServices
+        tagline={config.servicesTagline}
+        title={config.servicesTitle}
+        description={config.servicesDescription}
+      />
+
+      <CategoriesShowcase
+        tagline={config.categoriesTagline}
+        title={config.categoriesTitle}
+      />
+
+      <section className="py-24 md:py-32 bg-canvas relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute -top-20 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-20 right-1/3 w-80 h-80 bg-accent/5 rounded-full blur-3xl" />
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center space-y-2">
-            <p className="font-serif text-2xl md:text-3xl font-black tracking-tight">
-              {config.bannerTitle || "El arte de la repostería artesanal"}
-            </p>
-            <p className="font-sans text-sm md:text-base text-white/90 max-w-2xl mx-auto">
-              {config.bannerText || "Cada postre cuenta una historia de pasión, calidad y dedicación"}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-24 bg-card-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-            <div className="flex flex-col items-center text-center p-8 bg-canvas border border-accent/10 rounded-[28px] hover:border-accent/30 hover:shadow-md transition-all duration-300">
-              <div className="h-14 w-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 border border-accent/15">
-                <Heart className="h-7 w-7 text-accent" />
-              </div>
-              <h3 className="font-serif text-lg font-extrabold text-charcoal mb-3">Ingredientes Premium</h3>
-              <p className="font-sans text-sm text-charcoal-light leading-relaxed">
-                Cacao orgánico, mantequilla pura, frutas seleccionadas. Solo lo mejor en cada bocado.
-              </p>
+          {/* Header */}
+          <div className="text-center space-y-6 mb-20 animate-float-up">
+            <div className="inline-flex items-center space-x-2 bg-primary/10 border border-primary/30 px-4 py-2 rounded-full">
+              <Award className="h-5 w-5 text-primary" />
+              <span className="font-sans text-xs font-bold text-primary uppercase tracking-wider">{config.bestsellersTagline || "Bestsellers"}</span>
             </div>
-
-            <div className="flex flex-col items-center text-center p-8 bg-canvas border border-accent/10 rounded-[28px] hover:border-accent/30 hover:shadow-md transition-all duration-300">
-              <div className="h-14 w-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 border border-accent/15">
-                <Clock className="h-7 w-7 text-accent" />
-              </div>
-              <h3 className="font-serif text-lg font-extrabold text-charcoal mb-3">Fresco Diario</h3>
-              <p className="font-sans text-sm text-charcoal-light leading-relaxed">
-                Nuestros reposteros hornean de madrugada para textura y frescura garantizadas.
-              </p>
-            </div>
-
-            <div className="flex flex-col items-center text-center p-8 bg-canvas border border-accent/10 rounded-[28px] hover:border-accent/30 hover:shadow-md transition-all duration-300">
-              <div className="h-14 w-14 bg-primary/10 rounded-full flex items-center justify-center text-primary mb-6 border border-accent/15">
-                <ShoppingBag className="h-7 w-7 text-accent" />
-              </div>
-              <h3 className="font-serif text-lg font-extrabold text-charcoal mb-3">Bolsa & Reserva</h3>
-              <p className="font-sans text-sm text-charcoal-light leading-relaxed">
-                Elige online, confirma por WhatsApp. Simple, rápido y con atención personalizada.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <FeaturedServices />
-
-      <CategoriesShowcase />
-
-      <section className="py-24 md:py-32 bg-card-bg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <div className="text-center space-y-4 mb-16 md:mb-20">
-            <span className="inline-flex items-center space-x-2 font-sans text-[11px] tracking-[0.2em] uppercase text-accent font-bold">
-              <Award className="h-4 w-4" />
-              <span>Bestsellers</span>
-            </span>
-            <h2 className="font-serif text-4xl md:text-5xl font-black text-charcoal leading-[1.1]">
-              Antojos Más Aclamados
+            <h2 className="font-serif text-5xl md:text-6xl font-black text-charcoal leading-[1.1]">
+              {config.bestsellersTitle || "Antojos Más Aclamados"}
             </h2>
-            <p className="font-sans text-base text-charcoal-light max-w-xl mx-auto leading-relaxed">
-              Las recetas clásicas más solicitadas por nuestros clientes. Probadas y aprobadas.
+            <p className="font-sans text-lg text-charcoal-light max-w-2xl mx-auto leading-relaxed">
+              {config.bestsellersDescription || "Las recetas clásicas más solicitadas. Probadas y aprobadas por nuestros clientes."}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
-            {featuredDishes.map((dish) => (
+          {/* Products Grid - Asymmetric */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 auto-rows-max">
+            {featuredDishes.map((dish, idx) => (
               <article
                 key={dish.id}
-                className="group relative bg-canvas border border-accent/15 rounded-[28px] p-6 shadow-sm hover:shadow-lg hover:border-accent/35 transition-all duration-300"
+                className="group relative bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 hover:-translate-y-4 animate-float-up hover:scale-105"
+                style={{animationDelay: `${idx * 0.1 + 0.2}s`}}
               >
-                <div className="relative h-56 w-full rounded-2xl overflow-hidden bg-canvas mb-6">
+                {/* Image with overlay */}
+                <div className="relative h-64 md:h-72 w-full overflow-hidden bg-gradient-to-br from-primary/20 to-accent/20">
                   <img
                     src={dish.imageUrl}
                     alt={dish.name}
-                    className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="h-full w-full object-cover group-hover:scale-125 transition-transform duration-700"
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-charcoal/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+
+                  {/* Badge */}
                   <div className="absolute top-4 right-4">
-                    <span className="font-sans text-[10px] tracking-[0.15em] uppercase font-bold text-white bg-primary/80 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                      Popular
+                    <span className="inline-block bg-primary text-white font-sans text-xs font-bold px-4 py-2 rounded-full backdrop-blur-sm shadow-lg">
+                      ⭐ Popular
                     </span>
                   </div>
                 </div>
 
-                <div className="space-y-3">
-                  <h3 className="font-serif text-xl font-extrabold text-charcoal leading-tight">
+                {/* Content */}
+                <div className="p-8 space-y-4">
+                  <h3 className="font-serif text-2xl font-black text-charcoal group-hover:text-primary transition-colors">
                     {dish.name}
                   </h3>
-                  <p className="font-sans text-sm text-charcoal-light line-clamp-2 leading-relaxed">
+                  <p className="font-sans text-sm text-charcoal-light leading-relaxed line-clamp-2">
                     {dish.description}
                   </p>
 
-                  <div className="flex justify-between items-center pt-4 border-t border-accent/10">
-                    <span className="font-serif text-xl font-extrabold text-primary">
-                      S/. {dish.price.toFixed(2)}
-                    </span>
+                  {/* Footer */}
+                  <div className="flex items-center justify-between pt-6 border-t-2 border-primary/10">
+                    <div className="space-y-1">
+                      <p className="font-sans text-xs text-charcoal-light uppercase tracking-wider">Precio</p>
+                      <p className="font-serif text-2xl font-black text-primary">
+                        S/. {dish.price.toFixed(2)}
+                      </p>
+                    </div>
                     <Link
                       href="/menu"
-                      className="font-sans text-xs font-bold text-accent group-hover:text-primary transition-colors flex items-center space-x-1 hover:translate-x-1 transition-transform"
+                      className="bg-primary text-white h-12 w-12 rounded-full flex items-center justify-center hover:bg-primary-dark transition-all duration-300 hover:scale-110 shadow-lg"
                     >
-                      <span>Ver</span>
-                      <ArrowRight className="h-3 w-3" />
+                      <ArrowRight className="h-5 w-5" />
                     </Link>
                   </div>
                 </div>
               </article>
             ))}
           </div>
-
         </div>
       </section>
 
@@ -234,18 +348,18 @@ export default function Home() {
 
             <div className="text-center space-y-4 mb-16 md:mb-20">
               <span className="font-sans text-[11px] tracking-[0.2em] uppercase text-accent font-bold">
-                Visítanos
+                {config.branchesTagline || "Visítanos"}
               </span>
               <h2 className="font-serif text-4xl md:text-5xl font-black text-charcoal leading-[1.1]">
-                Nuestras Sedes
+                {config.branchesTitle || "Nuestras Sedes"}
               </h2>
               <p className="font-sans text-base text-charcoal-light max-w-xl mx-auto">
-                Encuentra la sucursal más cercana a ti.
+                {config.branchesDescription || "Encuentra la sucursal más cercana a ti."}
               </p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {branches.slice(0, 3).map((branch) => (
+              {(Array.isArray(branches) ? branches : []).slice(0, 3).map((branch) => (
                 <div key={branch.id} className="group bg-card-bg border border-accent/15 rounded-[24px] p-8 hover:border-accent/35 hover:shadow-lg transition-all duration-300">
                   <h3 className="font-serif text-xl font-extrabold text-charcoal mb-4">
                     {branch.name}
@@ -278,39 +392,59 @@ export default function Home() {
         </section>
       )}
 
-      <section className="py-20 md:py-28 bg-gradient-to-br from-charcoal via-charcoal/95 to-charcoal text-white relative overflow-hidden border-b border-accent/20">
-        <div className="absolute inset-0 opacity-30 bg-[radial-gradient(circle_at_20%_50%,rgba(197,160,89,0.1)_0%,transparent_50%)]" />
-        <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_80%_80%,rgba(107,26,42,0.1)_0%,transparent_50%)]" />
+      <section className="py-24 md:py-32 bg-gradient-to-br from-primary via-primary-dark to-charcoal text-white relative overflow-hidden">
+        {/* Animated background elements */}
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-accent/20 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-primary/20 rounded-full blur-3xl" />
 
-        <div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
-          <span className="inline-flex items-center space-x-2 font-sans text-[11px] tracking-[0.2em] uppercase text-accent font-bold">
-            <ShoppingBag className="h-4 w-4" />
-            <span>Comienza Ahora</span>
-          </span>
+        <div className="max-w-5xl mx-auto text-center px-4 sm:px-6 lg:px-8 relative z-10 space-y-10 animate-float-up">
+          <div className="inline-flex items-center space-x-3 bg-white/10 border border-white/30 px-6 py-3 rounded-full backdrop-blur-sm">
+            <ShoppingBag className="h-5 w-5 text-accent animate-bounce" />
+            <span className="font-sans text-sm font-bold text-white uppercase tracking-wider">🎉 Comienza Tu Aventura Culinaria</span>
+          </div>
 
-          <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl font-black text-white leading-[1.1]">
-            ¿Listo para Disfrutar?
-          </h2>
+          <div className="space-y-6">
+            <h2 className="font-serif text-5xl sm:text-6xl md:text-7xl font-black text-white leading-[1.1]">
+              {config.ctaTitle || "¿Listo para Disfrutar?"}
+            </h2>
+            <p className="font-sans text-lg sm:text-xl text-white/90 max-w-3xl mx-auto leading-relaxed">
+              {config.ctaText || "Explora nuestra carta completa, personaliza tus pedidos y reserva tu experiencia gastronómica. Atención rápida y trato especial garantizado."}
+            </p>
+          </div>
 
-          <p className="font-sans text-base sm:text-lg text-white/85 max-w-2xl mx-auto leading-relaxed">
-            Explora nuestra carta completa, personaliza tus pedidos y reserva tu experiencia gastronómica en línea. Atención rápida y trato especial garantizado.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+          {/* CTA Buttons - Side by side with enhanced styling */}
+          <div className="flex flex-col sm:flex-row gap-6 justify-center pt-8">
             <Link
               href="/menu"
-              className="inline-flex items-center justify-center space-x-2 font-sans text-sm font-bold text-charcoal bg-accent hover:bg-accent/90 py-4 px-8 rounded-2xl shadow-lg transition-smooth hover:scale-105 active:scale-97"
+              className="group relative inline-flex items-center justify-center space-x-2 font-sans font-bold text-charcoal bg-accent hover:bg-white py-5 px-10 rounded-3xl shadow-2xl transition-all duration-300 hover:scale-110 active:scale-95 overflow-hidden"
             >
-              <span>Explorar Menú</span>
-              <ArrowRight className="h-4 w-4" />
+              <span className="absolute inset-0 bg-gradient-to-r from-accent to-white opacity-0 group-hover:opacity-20 transition-opacity" />
+              <span className="relative">{config.ctaButton || "Explorar Menú Completo"}</span>
+              <ArrowRight className="h-5 w-5 relative transform group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
               href="/reservar"
-              className="inline-flex items-center justify-center space-x-2 font-sans text-sm font-bold text-accent bg-white/10 hover:bg-white/20 py-4 px-8 rounded-2xl border border-white/30 backdrop-blur-sm transition-smooth hover:scale-105 active:scale-97"
+              className="group inline-flex items-center justify-center space-x-2 font-sans font-bold text-white border-2 border-white/40 hover:border-white bg-white/10 hover:bg-white/20 py-5 px-10 rounded-3xl backdrop-blur-sm transition-all duration-300 hover:scale-110 active:scale-95"
             >
-              <span>Reservar Mesa</span>
-              <ArrowRight className="h-4 w-4" />
+              <span>Reservar Mesa Ahora</span>
+              <ArrowRight className="h-5 w-5 transform group-hover:translate-x-1 transition-transform" />
             </Link>
+          </div>
+
+          {/* Trust statement */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-8 border-t border-white/20">
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">✓</span>
+              <p className="font-sans text-sm text-white/80">Entrega garantizada</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">🎯</span>
+              <p className="font-sans text-sm text-white/80">Atención personalizada</p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <span className="text-2xl">⭐</span>
+              <p className="font-sans text-sm text-white/80">100% Premium</p>
+            </div>
           </div>
         </div>
       </section>

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
@@ -50,13 +50,42 @@ const defaultCategories: Category[] = [
 
 interface CategoriesShowcaseProps {
   categories?: Category[];
+  tagline?: string;
   title?: string;
 }
 
 export const CategoriesShowcase: React.FC<CategoriesShowcaseProps> = ({
-  categories = defaultCategories,
+  categories: propCategories,
+  tagline = 'Catálogo Completo',
   title = 'Explora Nuestras Categorías',
 }) => {
+  const [loadedCategories, setLoadedCategories] = useState<Category[]>(propCategories || defaultCategories);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/public/categories');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setLoadedCategories(data.map((c: any) => ({
+              id: c.id,
+              name: c.name,
+              image: c.imageUrl || '',
+              description: c.description || '',
+              productCount: c._count?.dishes || 0,
+              color: `${c.colorFrom} ${c.colorTo}`,
+            })));
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
   return (
     <section className="py-24 md:py-32 bg-canvas">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -64,7 +93,7 @@ export const CategoriesShowcase: React.FC<CategoriesShowcaseProps> = ({
         {/* Section Header */}
         <div className="text-center space-y-4 mb-16 md:mb-20">
           <span className="font-sans text-[11px] tracking-[0.2em] uppercase text-accent font-bold">
-            Catálogo Completo
+            {tagline}
           </span>
           <h2 className="font-serif text-4xl md:text-5xl font-black text-charcoal leading-[1.1]">
             {title}
@@ -73,7 +102,7 @@ export const CategoriesShowcase: React.FC<CategoriesShowcaseProps> = ({
 
         {/* Categories Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-          {categories.map((category) => (
+          {loadedCategories.map((category) => (
             <Link
               key={category.id}
               href={`/menu?category=${category.id}`}

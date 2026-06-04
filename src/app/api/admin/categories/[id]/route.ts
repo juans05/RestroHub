@@ -21,6 +21,10 @@ export async function PUT(
     const data: Record<string, unknown> = {};
     if (parsed.data.name !== undefined) data.name = parsed.data.name;
     if (parsed.data.slug !== undefined) data.slug = parsed.data.slug;
+    if (parsed.data.imageUrl !== undefined) data.imageUrl = parsed.data.imageUrl;
+    if (parsed.data.description !== undefined) data.description = parsed.data.description;
+    if (parsed.data.colorFrom !== undefined) data.colorFrom = parsed.data.colorFrom;
+    if (parsed.data.colorTo !== undefined) data.colorTo = parsed.data.colorTo;
     if (parsed.data.order !== undefined) data.order = parsed.data.order;
 
     const category = await prisma.category.update({

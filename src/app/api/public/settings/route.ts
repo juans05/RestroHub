@@ -35,6 +35,17 @@ export async function GET() {
           seoDescription: settings.seoDescription,
           maxPeoplePerReservation: settings.maxPeoplePerReservation,
           minOrderAdvanceHours: settings.minOrderAdvanceHours,
+          servicesTagline: settings.servicesTagline,
+          servicesTitle: settings.servicesTitle,
+          servicesDescription: settings.servicesDescription,
+          categoriesTagline: settings.categoriesTagline,
+          categoriesTitle: settings.categoriesTitle,
+          bestsellersTagline: settings.bestsellersTagline,
+          bestsellersTitle: settings.bestsellersTitle,
+          bestsellersDescription: settings.bestsellersDescription,
+          branchesTagline: settings.branchesTagline,
+          branchesTitle: settings.branchesTitle,
+          branchesDescription: settings.branchesDescription,
         }, { status: 200 });
       }
     }

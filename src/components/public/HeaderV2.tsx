@@ -31,11 +31,15 @@ export const HeaderV2: React.FC = () => {
     return () => clearTimeout(timer);
   }, [cartCount]);
 
-  const navLinks = [
-    { name: 'Menú', href: '/menu' },
-    { name: 'Sedes', href: '/sedes' },
-    { name: 'Reservar', href: '/reservar' },
+  const defaultNavLinks = [
+    { label: 'Menú', href: '/menu' },
+    { label: 'Sedes', href: '/sedes' },
+    { label: 'Reservar', href: '/reservar' },
   ];
+
+  const navLinks = Array.isArray(config?.navLinks) && config.navLinks.length > 0
+    ? config.navLinks
+    : defaultNavLinks;
 
   const isActive = (href: string) => pathname.startsWith(href);
 
@@ -63,7 +67,7 @@ export const HeaderV2: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8 flex-1 mx-8 justify-center">
-            {navLinks.map((link) => (
+            {navLinks.map((link: any) => (
               <Link
                 key={link.href}
                 href={link.href}
@@ -73,7 +77,7 @@ export const HeaderV2: React.FC = () => {
                     : 'text-charcoal-light hover:text-primary'
                 }`}
               >
-                {link.name}
+                {link.label || link.name}
                 {isActive(link.href) && (
                   <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-accent rounded-full animate-fade-in" />
                 )}
@@ -131,7 +135,7 @@ export const HeaderV2: React.FC = () => {
       {/* Mobile Menu */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-canvas border-b border-accent/15 px-4 pt-2 pb-6 space-y-2 shadow-inner animate-fade-in">
-          {navLinks.map((link) => (
+          {navLinks.map((link: any) => (
             <Link
               key={link.href}
               href={link.href}
@@ -142,7 +146,7 @@ export const HeaderV2: React.FC = () => {
                   : 'text-charcoal-light hover:bg-card-bg hover:text-primary'
               }`}
             >
-              {link.name}
+              {link.label || link.name}
             </Link>
           ))}
           <a
